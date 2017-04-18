@@ -322,7 +322,7 @@ StageNode::StageNode(int argc, char** argv, bool gui, const char* fname, bool us
 int
 StageNode::SubscribeModels()
 {
-    n_.setParam("/use_sim_time", true);
+//    n_.setParam("/use_sim_time", true);
 
     for (size_t r = 0; r < this->positionmodels.size(); r++)
     {
@@ -407,7 +407,8 @@ StageNode::WorldCallback()
 {
     boost::mutex::scoped_lock lock(msg_lock);
 
-    this->sim_time.fromSec(world->SimTimeNow() / 1e6);
+//    this->sim_time.fromSec(world->SimTimeNow() / 1e6);
+    this->sim_time = ros::Time::now();
     // We're not allowed to publish clock==0, because it used as a special
     // value in parts of ROS, #4027.
     if(this->sim_time.sec == 0 && this->sim_time.nsec == 0)
@@ -554,7 +555,7 @@ StageNode::WorldCallback()
         ground_truth_msg.twist.twist.angular.z = gvel.a;
 
         ground_truth_msg.header.frame_id = mapName("odom", r, static_cast<Stg::Model*>(robotmodel->positionmodel));
-        ground_truth_msg.header.stamp = sim_time;
+        ground_truth_msg.header.stamp = sim_time; //os::Time::now();
 
         robotmodel->ground_truth_pub.publish(ground_truth_msg);
 
@@ -728,7 +729,7 @@ StageNode::WorldCallback()
     this->base_last_globalpos_time = this->sim_time;
     rosgraph_msgs::Clock clock_msg;
     clock_msg.clock = sim_time;
-    this->clock_pub_.publish(clock_msg);
+//    this->clock_pub_.publish(clock_msg);
 }
 
 int 
